@@ -1,7 +1,8 @@
 // 開發用畫面：左邊編輯器、右邊預覽與 md2html 的輸出，上方可以切換主題、呼叫 ref 的方法（模式用編輯器工具列切換）
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import {md2html, Vditor, VditorPreview, VditorThemeProvider} from "../src/index.js";
+import {md2html, Vditor, VditorPreview, VditorThemeProvider} from "@wyttime04/react-vditor";
+import "@wyttime04/react-vditor/index.css";
 
 const SAMPLE = [
     "# GFM 範例",
