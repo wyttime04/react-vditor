@@ -1,0 +1,66 @@
+{
+    "name": "@wyttime04/react-vditor",
+    "version": "0.1.0",
+    "description": "vditor 的 React 元件：只支援 GFM、完全離線",
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        },
+        "./index.css": "./dist/index.css",
+        "./webpack-plugin": {
+            "types": "./webpack-plugin/index.d.ts",
+            "require": "./webpack-plugin/index.cjs"
+        }
+    },
+    "files": [
+        "dist",
+        "webpack-plugin"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "sideEffects": [
+        "*.css"
+    ],
+    "scripts": {
+        "start": "webpack serve --config dev/webpack.config.cjs --open",
+        "build": "node scripts/build.cjs",
+        "build:test": "webpack --config test/app/webpack.config.cjs",
+        "test:types": "tsc -p tsconfig.json",
+        "test": "npm run build:test && npm run test:types && jest"
+    },
+    "dependencies": {
+        "vditor": "4.0.0"
+    },
+    "peerDependencies": {
+        "react": ">=16.9.0 <20",
+        "webpack": "^5.76.0"
+    },
+    "peerDependenciesMeta": {
+        "webpack": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.26.0",
+        "@babel/core": "^7.26.0",
+        "@babel/preset-env": "^7.26.0",
+        "@babel/preset-react": "^7.26.0",
+        "@types/react": "^16.14.0",
+        "babel-loader": "^9.2.1",
+        "jest": "^29.7.0",
+        "postcss": "^8.5.28",
+        "postcss-prefix-selector": "^2.2.1",
+        "puppeteer": "^23.0.2",
+        "react": "16.9.0",
+        "react-dom": "16.9.0",
+        "typescript": "^5.6.0",
+        "webpack": "^5.111.1",
+        "webpack-cli": "^5.1.4",
+        "webpack-dev-server": "^5.2.0"
+    }
+}

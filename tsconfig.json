@@ -1,0 +1,16 @@
+{
+    // 只用來檢查型別（npm run test:types），不編譯：原始碼是 .js / .jsx，型別是手寫的 src/index.d.ts
+    "compilerOptions": {
+        "noEmit": true,
+        "strict": true,
+        "allowJs": true,
+        "checkJs": true,
+        "jsx": "react",
+        "target": "ES2020",
+        "module": "ES2020",
+        "moduleResolution": "bundler",
+        "lib": ["DOM", "ES2020"],
+        "skipLibCheck": false
+    },
+    "include": ["src/index.d.ts", "test/types"]
+}
