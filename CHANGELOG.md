@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.1.0](https://github.com/wyttime04/react-vditor/releases/tag/v0.1.0) (未發佈)
+## [0.1.0](https://github.com/wyttime04/react-vditor/releases/tag/v0.1.0) (2026-10-05)
 
 首個版本，以 [vditor](https://github.com/Vanessa219/vditor) 4.0.0 為基礎，僅支援 GFM 並可於完全離線的環境運作。
 
