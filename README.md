@@ -360,3 +360,16 @@ npm test             # 建置測試頁、檢查型別，並執行 puppeteer 測�
 ### 測試
 
 測試會確認每個情境皆無外部請求、無 404、無頁面錯誤。若 puppeteer 未下載瀏覽器，會改用系統安裝的 Chrome。
+
+### 發佈
+
+套件由 `.github/workflows/publish-npm.yaml` 於 GitHub Release 發佈時，透過 npm trusted publishing（OIDC）發佈。
+
+1. 執行 `npm version <版本> -m "chore(release): %s"`，建立版本 commit 與 tag `v<版本>`
+2. 執行 `git push --follow-tags`
+3. 以該 tag 建立 GitHub Release；預發佈版本須勾選「Set as a pre-release」
+
+workflow 會驗證 tag 與 `package.json` 的版本一致，並於測試與建置通過後發佈。
+dist-tag 依版本號決定：預發佈版本使用其識別字（例如 `1.0.0-beta.0` 為 `beta`），正式版本為 `latest`。
+
+首次使用前，須於 npmjs.com 套件設定的 Trusted Publisher 加入此 repo 與 workflow 檔名 `publish-npm.yaml`，並允許 `npm publish`。

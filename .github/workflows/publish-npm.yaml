@@ -1,0 +1,43 @@
+name: Publish Package to npmjs
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  id-token: write  # trusted publishing（OIDC）需要
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version-file: .nvmrc
+        registry-url: 'https://registry.npmjs.org'
+        package-manager-cache: false  # 發佈用的建置不使用快取（npm 文件建議）
+
+    - name: Check version
+      # release 的 tag 必須是 v + package.json 的版本，避免發佈到錯的版本
+      run: |
+        VERSION=$(node -p 'require("./package.json").version')
+        if [ "$GITHUB_REF_NAME" != "v$VERSION" ]; then
+          echo "::error::release 的 tag（$GITHUB_REF_NAME）與 package.json 的版本（v$VERSION）不一致"
+          exit 1
+        fi
+
+    - name: Install and Test
+      run: |
+        npm ci
+        npm test
+
+    - name: Build and Publish
+      # dist-tag 取版本號的 prerelease 名稱：0.1.0-alpha.1 → alpha、1.0.0-beta.0 → beta、1.0.0 → latest
+      run: |
+        npm run build
+        npm publish --tag "$(node -p '(require("./package.json").version.split("-")[1] || "latest").split(".")[0]')"
