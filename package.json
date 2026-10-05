@@ -1,6 +1,6 @@
 {
     "name": "@wyttime04/react-vditor",
-    "version": "0.1.0",
+    "version": "0.1.0-alpha.0",
     "description": "vditor 的 React 元件：只支援 GFM、完全離線",
     "license": "MIT",
     "repository": {
