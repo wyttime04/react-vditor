@@ -368,11 +368,20 @@ npm test             # 建置測試頁、檢查型別，並執行 puppeteer 測�
 
 套件由 `.github/workflows/publish-npm.yaml` 於 GitHub Release 發佈時，透過 npm trusted publishing（OIDC）發佈。
 
-1. 執行 `npm version <版本> -m "chore(release): %s"`，建立版本 commit 與 tag `v<版本>`
-2. 執行 `git push --follow-tags`
-3. 以該 tag 建立 GitHub Release；預發佈版本須勾選「Set as a pre-release」
+1. 執行 `npm version <patch|minor|major> --no-git-tag-version`，更新 `package.json` 與 `package-lock.json` 的版本號
+2. 更新 `CHANGELOG.md`
+3. 執行 `git commit -am "chore(release): <版本>"` 與 `git tag v<版本>`
+4. 執行 `git push origin main v<版本>`
+5. 以該 tag 建立 GitHub Release
 
-workflow 會驗證 tag 與 `package.json` 的版本一致，並於測試與建置通過後發佈。
-dist-tag 依版本號決定：預發佈版本使用其識別字（例如 `1.0.0-beta.0` 為 `beta`），正式版本為 `latest`。
+workflow 會驗證 tag 與 `package.json` 的版本一致，並於測試與建置通過後發佈至 dist-tag `latest`。
+
+> **預發佈版本**
+>
+> - 第 1 步改以 `npm version prerelease --preid alpha --no-git-tag-version` 遞增（例如 `0.1.0-alpha.1` → `0.1.0-alpha.2`），
+>   或直接指定版本號，例如 `npm version 0.2.0-alpha.0 --no-git-tag-version`
+> - 第 5 步建立 Release 時須勾選「Set as a pre-release」
+> - dist-tag 取自版本號的識別字，例如 `1.0.0-beta.0` 發佈至 `beta`，不會變更 `latest`
+> - 預發佈版本執行 `npm version patch` 會轉為對應的正式版本（例如 `0.1.0-alpha.2` → `0.1.0`）
 
 首次使用前，須於 npmjs.com 套件設定的 Trusted Publisher 加入此 repo 與 workflow 檔名 `publish-npm.yaml`，並允許 `npm publish`。
