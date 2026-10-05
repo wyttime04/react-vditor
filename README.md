@@ -328,7 +328,9 @@ const editorRef = useRef(null);
 ```sh
 npm install
 npm start            # 啟動開發用畫面 http://localhost:9000，直接載入 src 原始碼並自動重新整理
+npm run preview      # 先 npm run build，再以 dist/ 的套件啟動開發用畫面（production 模式），內容與 GitHub Pages 相同
 npm run build        # 以 babel 將 src 的 .js / .jsx 編譯至 dist/，並附上 index.d.ts 與 index.css（由 scripts/css.cjs 產生）
+npm run build:page   # 先 npm run build，再以 dist/ 的套件將開發用畫面建置至 dev/dist/，供 GitHub Pages 部署
 npm run test:types   # 以 tsc 檢查手寫的 src/index.d.ts（test/types/usage.jsx）
 npm test             # 建置測試頁、檢查型別，並執行 puppeteer 測試（React 16.9）
 ```
@@ -338,6 +340,17 @@ npm test             # 建置測試頁、檢查型別，並執行 puppeteer 測�
 `dev/` 提供開發用畫面：左側為 `<Vditor>`，右側為 `<VditorPreview>` 與 `md2html()` 的輸出，下方列出事件紀錄。
 上方可切換主題（透過 `VditorThemeProvider`），並呼叫 ref 的 `insertValue`, `disabled` / `enable`, `getValue`。
 工具列的「上傳圖片」不會實際上傳，選取的圖片以 `blob:` 網址直接顯示。
+
+`dev/main.jsx` 與使用端相同，以 `import "@wyttime04/react-vditor"` 及 `import "@wyttime04/react-vditor/index.css"` 引用套件，
+由 `dev/webpack.config.cjs` 依 mode 決定來源：
+
+| mode | 指令 | 套件來源 |
+|---|---|---|
+| development | `npm start` | `src/` 原始碼；`index.css` 由 `dev/index.css.cjs` 即時產生，不需先 build |
+| production | `npm run preview`, `npm run build:page` | `npm run build` 產出的 `dist/`，經 `package.json` 的 `exports` 解析 |
+
+推送至 `main` 分支時，`.github/workflows/deploy-pages.yaml` 會執行 `npm run build:page`，並將 `dev/dist/` 部署至 GitHub Pages。
+首次使用前，須於 repo 的 Settings → Pages 將 Source 設為「GitHub Actions」。
 
 ### 型別
 
