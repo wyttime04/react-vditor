@@ -2,9 +2,12 @@
 
 以 [vditor](https://github.com/Vanessa219/vditor) 4.0.0 為基礎的 React 元件，**僅支援 GFM 語法，並可於完全離線的環境運作**。
 
-- 直接使用上游原版 vditor，不維護 fork
 - mermaid、數學式、echarts 等 GFM 以外的附加渲染一律停用，相關區塊以一般程式碼區塊呈現
 - 執行期僅載入同源資源，不連線至任何 CDN
+
+**Online Demo**：[wyttime04.github.io/react-vditor](https://wyttime04.github.io/react-vditor/)
+
+**NPM Package**：[@wyttime04/react-vditor](https://www.npmjs.com/package/@wyttime04/react-vditor)
 
 ## 相容性
 
