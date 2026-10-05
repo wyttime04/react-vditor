@@ -3,6 +3,10 @@
     "version": "0.1.0",
     "description": "vditor 的 React 元件：只支援 GFM、完全離線",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wyttime04/react-vditor.git"
+    },
     "type": "module",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
