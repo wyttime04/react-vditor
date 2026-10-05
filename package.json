@@ -1,7 +1,17 @@
 {
     "name": "@wyttime04/react-vditor",
     "version": "0.1.0-alpha.1",
-    "description": "vditor 的 React 元件：只支援 GFM、完全離線",
+    "description": "React component for the Vditor Markdown editor, limited to GFM and fully offline",
+    "keywords": [
+        "react",
+        "vditor",
+        "markdown",
+        "markdown-editor",
+        "editor",
+        "wysiwyg",
+        "gfm",
+        "offline"
+    ],
     "license": "MIT",
     "repository": {
         "type": "git",
