@@ -62,7 +62,7 @@ const ref = useRef(null);
 // 僅渲染內容，不建立編輯器
 <VditorPreview value={markdown}/>
 
-// 轉換為 HTML（GFM 以外的區塊同樣轉為一般程式碼區塊）
+// 轉換為 HTML
 const html = await md2html(markdown);
 ```
 

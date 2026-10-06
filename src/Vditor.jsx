@@ -1,7 +1,6 @@
 import * as React from "react";
 import VditorCore from "vditor";
-import {defaultCdn} from "./cdn.js";
-import {gfmEditorOptions} from "./gfm.js";
+import {editorOptions} from "./options/default.js";
 import {themeClassName, useResolvedTheme} from "./theme.js";
 
 /**
@@ -105,7 +104,7 @@ export const Vditor = React.forwardRef(function Vditor(props, ref) {
         const {className, style, ...options} = propsRef.current;
         // 先用空內容建立，after 裡關掉行內數學式之後才放入真正的內容；否則初次渲染就會去載入 katex
         const instance = new VditorCore(host, {
-            ...gfmEditorOptions({...options, value: "", theme: editorTheme(themeRef.current)}, options.cdn || defaultCdn()),
+            ...editorOptions({...options, value: "", theme: editorTheme(themeRef.current)}),
             ...callbacks,
         });
 
@@ -172,7 +171,7 @@ export const Vditor = React.forwardRef(function Vditor(props, ref) {
                     return contentRef.current ?? "";
                 }
                 if (name === "getCurrentMode") {
-                    return propsRef.current.mode || "wysiwyg";   // 跟 gfm.js 的預設 mode 一致
+                    return propsRef.current.mode || "wysiwyg";   // 跟 options/default.js 的預設 mode 一致
                 }
                 return undefined;
             };

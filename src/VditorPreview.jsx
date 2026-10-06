@@ -1,7 +1,6 @@
 import * as React from "react";
 import VditorCore from "vditor";
-import {defaultCdn} from "./cdn.js";
-import {gfmPreviewOptions} from "./gfm.js";
+import {previewOptions} from "./options/default.js";
 import {themeClassName, useResolvedTheme} from "./theme.js";
 
 /**
@@ -16,7 +15,7 @@ export const VditorPreview = (props) => {
     const optionsKey = JSON.stringify(options);
 
     React.useEffect(() => {
-        VditorCore.preview(elementRef.current, value, gfmPreviewOptions(options, options.cdn || defaultCdn()));
+        VditorCore.preview(elementRef.current, value, previewOptions(options));
     }, [value, optionsKey]);   // options 以內容比較（optionsKey），不放物件本身
 
     // 主題只看外層容器的 class（index.css 裡局部化的樣式），換主題不用重新渲染；

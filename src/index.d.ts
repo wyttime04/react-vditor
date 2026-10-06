@@ -41,8 +41,11 @@ export type VditorPreviewProps = Omit<Partial<IPreviewOptions>, "theme" | "mode"
 /** 只渲染 Markdown、不建立編輯器 */
 export declare const VditorPreview: (props: VditorPreviewProps) => React.ReactElement;
 
-/** 預覽用的 HTML 轉換：非 GFM 的區塊一律變成普通程式碼區塊 */
+/** 非 GFM 的區塊（mermaid、數學式等）一律變成普通程式碼區塊 */
 export declare const gfmTransform: (html: string) => string;
 
-/** Markdown 轉 HTML，非 GFM 的區塊跟預覽一樣轉成普通程式碼區塊 */
+/** 預覽輸出使用的轉換：依序套用 Transform */
+export declare const previewTransform: (html: string) => string;
+
+/** Markdown 轉 HTML，跟預覽一樣套用 previewTransform */
 export declare const md2html: (markdown: string, options?: Partial<IPreviewOptions>) => Promise<string>;
