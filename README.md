@@ -244,7 +244,7 @@ const App = () => {
     "headings", "bold", "italic", "strike", "link", "|",
     "list", "ordered-list", "check", "outdent", "indent", "|",
     "quote", "line", "code", "inline-code", "insert-before", "insert-after", "|",
-    "upload-image", "table", "|",
+    "upload", "table", "|",
     "undo", "redo", "|",
     "fullscreen", "edit-mode",
     {name: "more", toolbar: ["both", "outline", "preview"]},
@@ -254,14 +254,13 @@ const App = () => {
 與 vditor 原生的預設工具列相比：
 
 - 移除 `export`（寫死連線至 CDN）、`devtools`（依賴 echarts）、`info`（寫死 unpkg 的圖片網址）
-- 移除 `emoji`, `record`, `upload`, `code-theme`, `content-theme`, `help`
-- 新增 `upload-image`
+- 移除 `emoji`, `record`, `code-theme`, `content-theme`, `help`
 
 傳入 `toolbar` prop 時，會完整取代預設工具列。
 
-### 上傳圖片按鈕 `upload-image`
+### 上傳
 
-僅接受圖片的上傳按鈕，已包含在預設工具列中，並可與 vditor 內建的 `upload`（圖片或文件）同時使用。
+工具列的 `upload` 按鈕、拖放與貼上加入的檔案，皆交由 `upload.handler` 處理，預設僅接受圖片。
 
 #### 範例
 
@@ -282,35 +281,35 @@ const editorRef = useRef(null);
 />
 ```
 
-使用自訂的 `toolbar` 時，請將 `"upload-image"` 加入其中：
+允許上傳文件時，將 `upload.imageOnly` 設為 `false`：
 
 ```jsx
-<Vditor toolbar={["bold", "italic", "|", "upload-image"]} upload={{handler}}/>
+<Vditor upload={{handler, imageOnly: false, accept: "image/*,.pdf"}}/>
 ```
 
 #### 行為
 
-1. 點選按鈕後開啟檔案選擇視窗，僅列出圖片檔
-2. 選取的檔案再次過濾，僅保留圖片，交由 `upload.handler` 處理
+1. 檔案依 `upload.imageOnly` 與 `upload.accept` 過濾，僅將符合者交由 `upload.handler` 處理
+2. 全部不符合時不呼叫 `handler`，並顯示「檔案類型不允許上傳」
 3. `handler` 回傳字串時，以提示訊息顯示（例如「檔案過大」）
 
-此行為與 vditor 內建上傳在設定 `handler` 時相同。插入圖片語法由 `handler` 負責，例如呼叫 ref 的 `insertValue`。
+插入圖片或連結語法由 `handler` 負責，例如呼叫 ref 的 `insertValue`。
 
 #### 相關設定
 
 | 設定 | 說明 |
 |---|---|
-| `upload.handler` | 必填。未設定時，點選按鈕僅顯示設定提示，不開啟檔案選擇視窗 |
-| `upload.multiple` | 為 `true`（vditor 預設）時可一次選取多張圖片，否則僅能選取一張 |
-| `lang` | 按鈕的提示文字依語言顯示，支援 zh_TW、zh_CN、en_US，其他語言顯示英文 |
-| 以物件指定按鈕 | 如需自訂提示文字或圖示：`{name: "upload-image", tip: "…", icon: "<svg>…</svg>"}`，指定的欄位優先於預設值。自訂的 `tip` 為固定字串，不會隨語言切換 |
+| `upload.imageOnly` | 本套件新增，預設 `true`：僅接受圖片，按鈕提示為「上傳圖片」（支援 zh_TW、zh_CN、en_US，其他語言顯示英文）。設為 `false` 時僅依 `upload.accept` 過濾，按鈕提示為 vditor 的「上傳圖片或文件」 |
+| `upload.accept` | 格式同 `<input accept>`，例如 `image/png,.pdf`。`imageOnly` 為 `true` 時僅能進一步限縮圖片類型；為 `false` 且未設定時不限制 |
+| `upload.handler` | 處理上傳的檔案。上述過濾僅作用於 `handler`；改用 vditor 的 `upload.url` 上傳時，由 vditor 依 `upload.accept` 檢查 |
+| `upload.multiple` | 為 `true`（vditor 預設）時可一次選取多個檔案，否則僅能選取一個 |
+| 以物件指定按鈕 | 如需自訂提示文字或圖示：`{name: "upload", tip: "…", icon: "<svg>…</svg>"}`，指定的欄位優先於預設值。自訂的 `tip` 為固定字串，不會隨語言切換 |
 
 #### 限制
 
-- 僅支援 `upload.handler`，不支援 `upload.url`：`url` 屬於 vditor 內部的上傳流程，未提供可呼叫的公開 API
-- 檔案類型的限制僅作用於檔案選擇視窗；以拖放或貼上方式加入的檔案不經過此按鈕。
-  另外，設定 `upload.handler` 時 vditor 不會檢查檔案類型與大小，請於 `handler` 中自行驗證
-- `upload.handler` 只在建立編輯器時讀取，詳見「[props 變更時的行為](#props-變更時的行為)」
+- 設定 `upload.handler` 時 vditor 不會檢查檔案大小（`upload.max`），請於 `handler` 中自行驗證
+- `upload.multiple` 不為 `true` 時，vditor 會先只取第一個檔案再交由過濾，同時拖入多個檔案可能因此全部被擋下
+- `upload` 的設定只在建立編輯器時讀取，詳見「[props 變更時的行為](#props-變更時的行為)」
 
 ## 預設值與原生 vditor 的差異
 
@@ -321,6 +320,7 @@ const editorRef = useRef(null);
 | `theme` | `light` | 僅支援 `light` / `dark` / `auto`，詳見「[主題](#主題)」 |
 | `toolbar` | 詳見「[預設工具列](#預設工具列)」 | |
 | `cache` | `{enable: false}` | vditor 啟用快取時必須提供 `cache.id` |
+| `upload.imageOnly` | `true` | 本套件新增的選項：僅接受圖片，詳見「[上傳](#上傳)」 |
 | `preview.markdown.footnotes` | `false` | GFM 不包含註腳 |
 | `preview.markdown.codeBlockPreview`, `mathBlockPreview` | `false` | ir / wysiwyg 模式不顯示程式碼區塊的預覽面板，避免渲染 mermaid 等區塊 |
 | `preview.render.media.enable` | `false` | 不將影片、音訊連結嵌入為 iframe |

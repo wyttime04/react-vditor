@@ -15,6 +15,7 @@ export const Editor = () => <Vditor
     input={(value) => value.trim()}
     after={() => ref.current?.setValue("x")}
     preview={{transform: (html) => html}}
+    upload={{imageOnly: false, accept: "image/*,.pdf", handler: () => null}}
     className="editor"
     style={{height: 300}}
 />;
@@ -34,6 +35,9 @@ export const transformed = gfmTransform("<p>x</p>");
 export const unlinked = linkTransform("<p>x</p>");
 /** @type {string} */
 export const previewed = previewTransform("<p>x</p>");
+
+// @ts-expect-error imageOnly 是布林值
+export const WrongImageOnly = () => <Vditor upload={{imageOnly: "yes"}}/>;
 
 // @ts-expect-error mode 只能是 ir / wysiwyg / sv
 export const WrongMode = () => <Vditor mode="markdown"/>;

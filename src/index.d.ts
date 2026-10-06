@@ -17,10 +17,17 @@ export type VditorRef = Pick<VditorCore,
     | "getValue" | "getCurrentMode" | "getSelection" | "getCursorPosition" | "isUploading"
     | "html2md" | "exportJSON" | "getHTML" | "getCommentIds">;
 
-/** props 就是 vditor 的 IOptions（theme 換成 VditorTheme），另外加 className、style */
-export type VditorProps = Omit<IOptions, "theme"> & {
+/** props 就是 vditor 的 IOptions（theme 換成 VditorTheme，upload 多了 imageOnly），另外加 className、style */
+export type VditorProps = Omit<IOptions, "theme" | "upload"> & {
     /** 預設取最近的 VditorThemeProvider，沒有就是 light */
     theme?: VditorTheme;
+    upload?: IUpload & {
+        /**
+         * 預設 true：upload 按鈕、拖曳、貼上只收圖片，accept 再從中限縮，按鈕提示為「上傳圖片」。
+         * false 時只依 accept 過濾，按鈕提示為「上傳圖片或文件」
+         */
+        imageOnly?: boolean;
+    };
     className?: string;
     style?: React.CSSProperties;
 };
