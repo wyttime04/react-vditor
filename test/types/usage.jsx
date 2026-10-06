@@ -2,7 +2,7 @@
 // 型別檢查（npm run test:types）：確認 index.d.ts 能正確描述使用方式。
 // 標了 @ts-expect-error 的那幾行必須報錯，型別太寬鬆時 tsc 會因為「預期的錯誤沒發生」而失敗。
 import * as React from "react";
-import {md2html, gfmTransform, previewTransform, Vditor, VditorPreview, VditorThemeProvider} from "../../src/index.js";
+import {md2html, gfmTransform, linkTransform, previewTransform, Vditor, VditorPreview, VditorThemeProvider} from "../../src/index.js";
 
 /** @type {React.RefObject<import("../../src/index.js").VditorRef>} */
 const ref = React.createRef();
@@ -30,6 +30,8 @@ export const Page = () => <VditorThemeProvider theme="dark">
 export const html = md2html("# hi");
 /** @type {string} */
 export const transformed = gfmTransform("<p>x</p>");
+/** @type {string} */
+export const unlinked = linkTransform("<p>x</p>");
 /** @type {string} */
 export const previewed = previewTransform("<p>x</p>");
 

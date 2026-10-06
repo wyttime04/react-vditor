@@ -80,6 +80,52 @@ describe("React 16.9", () => {
         await result.page.close();
     });
 
+    /** 解析 HTML，回傳所有 <a> 的 href */
+    const hrefsOf = (page, html) => page.evaluate((h) => {
+        const template = document.createElement("template");
+        template.innerHTML = h;
+        return [...template.content.querySelectorAll("a")].map((a) => a.getAttribute("href"));
+    }, html);
+
+    it("md2html：網址不合法的連結變成純文字，合法網址與相對路徑保留", async () => {
+        const result = await env.openPage();
+        const md = [
+            "[相對](./a.md) [根目錄](/a) [錨點](#x) [https](https://e.com) [mailto](mailto:a@b.c) www.example.com",
+            "[js](javascript:alert(1)) [實體編碼](jav&#x61;script:alert(1)) [data](data:text/html,x) [vbscript](vbscript:x) [**粗體**](javascript:x)",
+            "<a href=\"data:text/html,x\">html</a>",
+        ].join("\n\n");
+        const html = await result.page.evaluate((m) => window.harness.md2html(m), md);
+        expect(await hrefsOf(result.page, html)).toEqual(["./a.md", "/a", "#x", "https://e.com", "mailto:a@b.c", "http://www.example.com"]);
+        expect(html).toContain("<p>js 實體編碼 data vbscript <strong>粗體</strong></p>");
+        expect(html).toContain("<p>html</p>");
+        expectClean(result);
+        await result.page.close();
+    });
+
+    it("md2html：沒有要拆的連結時，輸出原樣保留", async () => {
+        const result = await env.openPage();
+        const html = await result.page.evaluate(() => window.harness.md2html("[ok](./a.md) ![圖](./i.png)"));
+        expect(html).toBe('<p><a href="./a.md">ok</a> <img src="./i.png" alt="圖" /></p>\n');
+        expectClean(result);
+        await result.page.close();
+    });
+
+    it("VditorPreview 與 sv 編輯器的預覽區：網址不合法的連結變成純文字", async () => {
+        const md = "[ok](./a.md) [bad](data:text/html,x)";
+        const result = await env.openPage();
+        const {page} = result;
+        await page.evaluate((m) => window.harness.mount("preview", {value: m}), md);
+        await page.waitForSelector("#root .vditor-reset p");
+        expect(await page.evaluate(() => document.querySelector("#root .vditor-reset p").innerHTML)).toBe('<a href="./a.md">ok</a> bad');
+
+        await page.evaluate(() => window.harness.unmount());
+        await page.evaluate((m) => window.harness.mount("editor", {value: m, mode: "sv", preview: {mode: "both"}}), md);
+        await page.waitForSelector(".vditor-preview .vditor-reset p");
+        expect(await page.evaluate(() => document.querySelector(".vditor-preview .vditor-reset p").innerHTML)).toBe('<a href="./a.md">ok</a> bad');
+        expectClean(result);
+        await page.close();
+    });
+
     it.each(["ir", "wysiwyg", "sv"])("%s 編輯器：打字觸發 input，內容與行內數學式原樣保留", async (mode) => {
         const result = await mountEditor({mode, value: MIXED});
         const {page} = result;

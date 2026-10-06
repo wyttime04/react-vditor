@@ -44,7 +44,10 @@ export declare const VditorPreview: (props: VditorPreviewProps) => React.ReactEl
 /** 非 GFM 的區塊（mermaid、數學式等）一律變成普通程式碼區塊 */
 export declare const gfmTransform: (html: string) => string;
 
-/** 預覽輸出使用的轉換：依序套用 Transform */
+/** 網址不合法的連結變成純文字，只留下連結文字 */
+export declare const linkTransform: (html: string) => string;
+
+/** 預覽輸出使用的轉換：依序套用 gfmTransform、linkTransform */
 export declare const previewTransform: (html: string) => string;
 
 /** Markdown 轉 HTML，跟預覽一樣套用 previewTransform */

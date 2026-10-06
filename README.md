@@ -163,8 +163,18 @@ props 沿用 `Vditor.preview` 的 `IPreviewOptions`，另增 `value`（要渲染
 
 ### `md2html(markdown, options?)`
 
-將 Markdown 轉換為 HTML，回傳 `Promise<string>`。GFM 以外的區塊會與預覽相同，轉換為一般程式碼區塊
+將 Markdown 轉換為 HTML，回傳 `Promise<string>`。GFM 以外的區塊與網址不合法的連結，處理方式與預覽相同
 （vditor 原生的 `md2html` 不套用 `transform`，因此由本函式處理）。
+
+### `gfmTransform`, `linkTransform`, `previewTransform`
+
+預覽輸出所套用的 HTML 轉換，型別皆為 `(html: string) => string`。
+
+| 函式 | 說明 |
+|---|---|
+| `gfmTransform` | GFM 以外的區塊（mermaid、數學式等）轉為一般程式碼區塊 |
+| `linkTransform` | 網址不合法的連結轉為純文字，規則詳見「[預設值與原生 vditor 的差異](#預設值與原生-vditor-的差異)」 |
+| `previewTransform` | 依序套用 `gfmTransform`、`linkTransform`；`<VditorPreview>`、`md2html()` 與編輯器的預覽區皆使用此轉換 |
 
 ## 主題
 
@@ -314,13 +324,14 @@ const editorRef = useRef(null);
 | `preview.markdown.footnotes` | `false` | GFM 不包含註腳 |
 | `preview.markdown.codeBlockPreview`, `mathBlockPreview` | `false` | ir / wysiwyg 模式不顯示程式碼區塊的預覽面板，避免渲染 mermaid 等區塊 |
 | `preview.render.media.enable` | `false` | 不將影片、音訊連結嵌入為 iframe |
-| `preview.transform` | GFM 以外的區塊轉為一般程式碼區塊 | 使用端傳入的 `transform` 會於其後執行 |
+| `preview.transform` | GFM 以外的區塊轉為一般程式碼區塊；網址不合法的連結轉為純文字 | 網址規則同 DOMPurify 的 `IS_ALLOWED_URI`：允許 `http(s)`、`mailto`、`tel` 等協定與相對路徑。使用端傳入的 `transform` 會於其後執行 |
 | `preview.theme.current` | `""`（固定） | 內容主題改由 `theme` 決定，不使用 vditor 整頁共用的 `<link>` |
 | 行內數學式 `$…$` | 視為一般文字 | GFM 不包含數學式 |
 
 ## 已知限制
 
 - ir / wysiwyg 模式中的程式碼區塊不會上色（停用預覽面板所致）；sv 模式的預覽區與 `<VditorPreview>` 仍會上色
+- 網址不合法的連結轉為純文字，僅作用於 `<VditorPreview>`、`md2html()` 與編輯器的預覽區；ir / wysiwyg 模式的編輯區不套用 `transform`，連結仍會顯示
 - `$$ … $$` 區塊會以程式碼區塊呈現（Lute 未提供停用此語法的設定）
 - `:smile:` 等 emoji 代碼會轉為對應字元，YAML front matter 會以程式碼區塊呈現；兩者雖非 GFM 語法，仍予以保留
 - vditor 無論設定為何，都會整頁載入 highlight.js 的 `github.min.css`；`dark` 主題的程式碼樣式以局部化且優先權較高的規則覆寫
