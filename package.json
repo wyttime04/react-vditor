@@ -1,6 +1,6 @@
 {
     "name": "@wyttime04/react-vditor",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "React component for the Vditor Markdown editor, limited to GFM and fully offline",
     "keywords": [
         "react",
