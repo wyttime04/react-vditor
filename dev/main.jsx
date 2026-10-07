@@ -1,8 +1,17 @@
-// 開發用畫面：左邊編輯器、右邊預覽與 md2html 的輸出，上方可以切換主題、呼叫 ref 的方法（模式用編輯器工具列切換）
+// 開發用畫面：展示 <Vditor>、<VditorPreview> 與 md2html 的輸出，可以切換主題、呼叫 ref 的方法（模式用編輯器工具列切換）
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import {md2html, Vditor, VditorPreview, VditorThemeProvider} from "@wyttime04/react-vditor";
 import "@wyttime04/react-vditor/index.css";
+
+/** 專案連結的徽章（shields.io）。GitHub 為靜態徽章，其餘依 npm 上已發佈的版本自動更新 */
+const BADGES = [
+    {href: "https://github.com/wyttime04/react-vditor", src: "https://img.shields.io/badge/GitHub-wyttime04%2Freact--vditor-24292f?logo=github", alt: "GitHub"},
+    {href: "https://www.npmjs.com/package/@wyttime04/react-vditor", src: "https://img.shields.io/npm/v/@wyttime04/react-vditor", alt: "npm"},
+    {href: "https://github.com/wyttime04/react-vditor/blob/main/LICENSE", src: "https://img.shields.io/npm/l/@wyttime04/react-vditor", alt: "license"},
+    {href: "https://github.com/Vanessa219/vditor", src: "https://img.shields.io/npm/dependency-version/@wyttime04/react-vditor/vditor", alt: "vditor"},
+    {href: "https://github.com/wyttime04/react-vditor#相容性", src: "https://img.shields.io/npm/dependency-version/@wyttime04/react-vditor/peer/react", alt: "react"},
+];
 
 const SAMPLE = [
     "# GFM 範例",
@@ -61,6 +70,11 @@ const App = () => {
     return <VditorThemeProvider theme={theme}>
         <header>
             <h1>@wyttime04/react-vditor · React {React.version}</h1>
+            <nav>
+                {BADGES.map(({href, src, alt}) => <a key={src} href={href} target="_blank" rel="noopener"><img src={src} alt={alt}/></a>)}
+            </nav>
+        </header>
+        <div className="controls">
             <label>主題 <select value={theme} onChange={(event) => setTheme(event.target.value)}>
                 <option value="light">light</option>
                 <option value="dark">dark</option>
@@ -70,7 +84,7 @@ const App = () => {
             <button onClick={() => editorRef.current.insertValue("**插入的文字**")}>insertValue</button>
             <button onClick={toggleDisabled}>{disabled ? "enable" : "disabled"}</button>
             <button onClick={() => addLog(`getValue：${JSON.stringify(editorRef.current.getValue()).slice(0, 80)}…`)}>getValue</button>
-        </header>
+        </div>
         <main>
             <section>
                 <h2>&lt;Vditor&gt;</h2>

@@ -1,5 +1,11 @@
 # @wyttime04/react-vditor
 
+[![GitHub](https://img.shields.io/badge/GitHub-wyttime04%2Freact--vditor-24292f?logo=github)](https://github.com/wyttime04/react-vditor)
+[![npm](https://img.shields.io/npm/v/@wyttime04/react-vditor)](https://www.npmjs.com/package/@wyttime04/react-vditor)
+[![license](https://img.shields.io/npm/l/@wyttime04/react-vditor)](https://github.com/wyttime04/react-vditor/blob/main/LICENSE)
+[![vditor](https://img.shields.io/npm/dependency-version/@wyttime04/react-vditor/vditor)](https://github.com/Vanessa219/vditor)
+[![react](https://img.shields.io/npm/dependency-version/@wyttime04/react-vditor/peer/react)](https://github.com/wyttime04/react-vditor#相容性)
+
 以 [vditor](https://github.com/Vanessa219/vditor) 4.0.0 為基礎的 React 元件，**僅支援 GFM 語法，並可於完全離線的環境運作**。
 
 - mermaid、數學式、echarts 等 GFM 以外的附加渲染一律停用，相關區塊以一般程式碼區塊呈現
@@ -381,9 +387,9 @@ npm test             # 建置測試頁、檢查型別，並執行 puppeteer 測�
 
 ### 開發用畫面
 
-`dev/` 提供開發用畫面：左側為 `<Vditor>`，右側為 `<VditorPreview>` 與 `md2html()` 的輸出，下方列出事件紀錄。
-上方可切換主題（透過 `VditorThemeProvider`），並呼叫 ref 的 `insertValue`, `disabled` / `enable`, `getValue`。
-工具列的「上傳圖片」不會實際上傳，選取的圖片以 `blob:` 網址直接顯示。
+`dev/` 提供開發用畫面，展示 `<Vditor>`、`<VditorPreview>` 與 `md2html()` 的輸出，並列出編輯器的事件紀錄。
+可切換主題（透過 `VditorThemeProvider`），並呼叫 ref 的 `insertValue`, `disabled` / `enable`, `getValue`。
+上傳的圖片（工具列、拖放、貼上）不會實際上傳，以 `blob:` 網址直接顯示。
 
 `dev/main.jsx` 與使用端相同，以 `import "@wyttime04/react-vditor"` 及 `import "@wyttime04/react-vditor/index.css"` 引用套件，
 由 `dev/webpack.config.cjs` 依 mode 決定來源：
