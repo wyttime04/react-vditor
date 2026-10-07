@@ -328,6 +328,36 @@ const editorRef = useRef(null);
 | `preview.theme.current` | `""`（固定） | 內容主題改由 `theme` 決定，不使用 vditor 整頁共用的 `<link>` |
 | 行內數學式 `$…$` | 視為一般文字 | GFM 不包含數學式 |
 
+## XSS 防護
+
+內建的過濾如下：
+
+| 來源 | 處理內容 |
+|---|---|
+| Lute 的 `sanitize`（vditor 預設啟用） | 移除 `<script>`、`<style>`、`on*` 事件屬性與 `javascript:` 網址 |
+| `linkTransform` | 網址不合法的連結轉為純文字，詳見「[預設值與原生 vditor 的差異](#預設值與原生-vditor-的差異)」 |
+
+`<iframe>`、`<embed>`、`<form>` 等元素與 `style` 屬性仍會保留，建議透過 `transform` 以 DOMPurify 等工具再行過濾：
+
+```jsx
+import DOMPurify from "dompurify";
+
+// iframe、embed、object 由 DOMPurify 預設移除；表單元素與 style 屬性需另行禁止
+const sanitize = (html) => DOMPurify.sanitize(html, {
+    FORBID_TAGS: ["form", "button", "textarea", "select"],
+    FORBID_ATTR: ["style"],
+});
+
+<Vditor preview={{transform: sanitize}}/>
+<VditorPreview value={markdown} transform={sanitize}/>
+const html = await md2html(markdown, {transform: sanitize});
+```
+
+- 使用端的 `transform` 於 `previewTransform` 之後執行
+- 任務清單的勾選框為 `<input type="checkbox">`：需要任務清單時不可禁止 `input`；不需要時可將 `input` 加入 `FORBID_TAGS`
+- 程式碼區塊的複製按鈕與上色由 vditor 於 `transform` 之後加入，不受影響
+- `<Vditor>` 的 `preview.transform` 僅作用於預覽區（sv 模式的分屏預覽與預覽模式）；wysiwyg、ir 模式的編輯區不經過 `transform`
+
 ## 已知限制
 
 - ir / wysiwyg 模式中的程式碼區塊不會上色（停用預覽面板所致）；sv 模式的預覽區與 `<VditorPreview>` 仍會上色
